@@ -18,15 +18,17 @@ public class GameManager : MonoBehaviour
     protected DateTime _fromLastRespawn;
     // Player prefab istance
     [SerializeField] private GameObject _playerPrefab;
+    // Spawnpoint prefab istance
+    [SerializeField] private GameObject _spawnPrefab;
+    [SerializeField] int idLenght = 5;
     /// the elapsed time since the start of the level
     public System.TimeSpan GlobalTimer { get { return DateTime.UtcNow - _started; } }
     // the elapsed time since the last respawn
-    public System.TimeSpan RespwanTimer { get { return DateTime.UtcNow - _fromLastRespawn; } }
+    public System.TimeSpan CurrentTimer { get { return DateTime.UtcNow - _fromLastRespawn; } }
 
     // Series of action event to be fired and recorded in the the analytics.
-    public event Action<string, object> levelStartEvent;
-    public event Action<string, object> respawnEvent;
-    public event Action<string, object> levelCompleEvent;
+    public event Action<string, object> registerEvent;
+    public event Action<string, object> levelCompleteEvent;
 
     // Singleton to access the GameManager from other classes
     public static GameManager Instance
@@ -77,18 +79,21 @@ public class GameManager : MonoBehaviour
         Initialization();
     }
 
-    // initiliase any required components and variables at Start
+    // Initiliase any required components and variables at Start
     protected virtual void Initialization()
     {
         _started = DateTime.UtcNow;
-        levelID = LevelID(5);
+        _fromLastRespawn = _started;
+        levelID = LevelID(idLenght);
+        LevelStartedRecorder();
     }
 
-
-    // Update is called once per frame
-    void Update()
+    private void LevelStartedRecorder()
     {
-        
+        registerEvent("level_id", levelID);
+        registerEvent("level_started", true);
+        registerEvent("current_timer", CurrentTimer);
+        registerEvent("node_name", _spawnPrefab.name);
     }
 
     // Generate random level id
@@ -97,5 +102,27 @@ public class GameManager : MonoBehaviour
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         return new string(Enumerable.Repeat(chars, length)
           .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    // Send information about new node reached
+    public void NodeReached(GameObject currentNode) 
+    {
+        registerEvent("new_node_reached", true);
+        registerEvent("node_name", currentNode.name);
+        registerEvent("current_time", CurrentTimer);
+    }
+
+    // Respawn player
+    public void RespawnPlayer()
+    {
+        respawnCounter++;
+        registerEvent("death_position", _playerPrefab.transform.position);
+        registerEvent("death_timer", CurrentTimer);
+        _fromLastRespawn = DateTime.UtcNow;
+        _playerPrefab.transform.position = _spawnPrefab.transform.position;
+        registerEvent("player_respawned", true);
+        registerEvent("node_name", _spawnPrefab.name);
+        registerEvent("respawn_counter", respawnCounter);
+        registerEvent("current_timer", CurrentTimer);
     }
 }

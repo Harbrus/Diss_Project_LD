@@ -11,25 +11,12 @@ public class AnalyticsRecorder : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.Instance.levelStartEvent += OnLevelStart;
-        GameManager.Instance.levelStartEvent += OnRespwan;
-        GameManager.Instance.levelStartEvent += OnLevelComplete;
+        GameManager.Instance.registerEvent += RegisterCustomEvent;
+        GameManager.Instance.levelCompleteEvent += OnLevelComplete;
     }
 
-    // Add information into the dictionary on level start
-    public void OnLevelStart(string recordName, object recordObject) 
-    {
-        dict[recordName] = recordObject;
-    }
-
-    // Add information into the dictionary on respawn
-    public void OnRespwan(string recordName, object recordObject) 
-    {
-        dict[recordName] = recordObject;
-    }
-
-    // Add information into the dictionary when the players collect an item.
-    public void OnCollection(string recordName, object recordObject)
+    // Add information into the dictionary on firing events
+    public void RegisterCustomEvent(string recordName, object recordObject) 
     {
         dict[recordName] = recordObject;
     }
@@ -40,6 +27,4 @@ public class AnalyticsRecorder : MonoBehaviour
         dict[recordName] = recordObject;
         Analytics.CustomEvent("LevelCompleted", dict);
     }
-
-
 }
