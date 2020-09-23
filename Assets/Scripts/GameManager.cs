@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     // Random used for level id generation 
     private static System.Random random = new System.Random();
     private string levelID = "";
+    private int respawnCounter;
     // Game manager instance used for the singleton
     protected static GameManager _instance;
     // Time at the start of the level
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     // the elapsed time since the last respawn
     public System.TimeSpan RespwanTimer { get { return DateTime.UtcNow - _fromLastRespawn; } }
 
+    // Series of action event to be fired and recorded in the the analytics.
     public event Action<string, object> levelStartEvent;
     public event Action<string, object> respawnEvent;
     public event Action<string, object> levelCompleEvent;

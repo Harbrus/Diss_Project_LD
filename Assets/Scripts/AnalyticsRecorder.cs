@@ -7,7 +7,7 @@ using UnityEngine.Analytics;
 public class AnalyticsRecorder : MonoBehaviour
 {
     // Recyclable dictionary for custom events
-    private static Dictionary<string, object> dict = new Dictionary<string, object>();
+    private Dictionary<string, object> dict = new Dictionary<string, object>();
 
     private void Awake()
     {
@@ -16,11 +16,30 @@ public class AnalyticsRecorder : MonoBehaviour
         GameManager.Instance.levelStartEvent += OnLevelComplete;
     }
 
-    public void OnLevelStart(string recordName, object recordObject) { }
+    // Add information into the dictionary on level start
+    public void OnLevelStart(string recordName, object recordObject) 
+    {
+        dict[recordName] = recordObject;
+    }
 
-    public void OnRespwan(string recordName, object recordObject) { }
+    // Add information into the dictionary on respawn
+    public void OnRespwan(string recordName, object recordObject) 
+    {
+        dict[recordName] = recordObject;
+    }
 
-    public void OnLevelComplete(string recordName, object recordObject) { }
+    // Add information into the dictionary when the players collect an item.
+    public void OnCollection(string recordName, object recordObject)
+    {
+        dict[recordName] = recordObject;
+    }
+
+    // Add information into the dictionary on level complete and sent information to Unity Analytics
+    public void OnLevelComplete(string recordName, object recordObject) 
+    {
+        dict[recordName] = recordObject;
+        Analytics.CustomEvent("LevelCompleted", dict);
+    }
 
 
 }
