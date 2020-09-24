@@ -7,16 +7,32 @@ using UnityEngine.Analytics;
 public class AnalyticsRecorder : MonoBehaviour
 {
     // Recyclable dictionary for custom events
-    private Dictionary<string, object> dict = new Dictionary<string, object>();
+    [SerializeField] private Dictionary<string, object> dict;
+    [SerializeField] private List<string> node_path;
 
     private void Awake()
     {
-        GameManager.Instance.registerEvent += RegisterCustomEvent;
+        dict = new Dictionary<string, object>();
+        GameManager.Instance.levelStartEvent += OnLevelStart;
+        GameManager.Instance.nodeReachedEvent += OnNodeReached;
+        GameManager.Instance.respawnEvent += OnRespawn;
         GameManager.Instance.levelCompleteEvent += OnLevelComplete;
     }
 
     // Add information into the dictionary on firing events
-    public void RegisterCustomEvent(string recordName, object recordObject) 
+    public void OnLevelStart(string recordName, object recordObject)
+    {
+        dict[recordName] = recordObject;
+    }
+
+    // Add information into the dictionary on firing events
+    public void OnNodeReached(string recordName, object recordObject)
+    {
+        dict[recordName] = recordObject;
+    }
+
+    // Add information into the dictionary on firing events
+    public void OnRespawn(string recordName, object recordObject) 
     {
         dict[recordName] = recordObject;
     }
@@ -25,6 +41,10 @@ public class AnalyticsRecorder : MonoBehaviour
     public void OnLevelComplete(string recordName, object recordObject) 
     {
         dict[recordName] = recordObject;
-        Analytics.CustomEvent("LevelCompleted", dict);
+    }
+
+    public void RegisterEvent(string eventName)
+    {
+        //Analytics.CustomEvent(eventName, dict);
     }
 }

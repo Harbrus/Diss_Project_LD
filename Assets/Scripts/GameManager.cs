@@ -1,33 +1,42 @@
-﻿using System;
+﻿using Invector.vCharacterController;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private bool recordAnalytics = false;
     // Random used for level id generation 
     private static System.Random random = new System.Random();
+    // ID string for the level
     private string levelID = "";
-    private int respawnCounter;
+    [SerializeField] int idLenght = 5;
+    // Respawn counter
+    [SerializeField] private int respawnCounter;
+    // Player prefab istance
+    [SerializeField] private GameObject _playerPrefab;
+    // Spawnpoint prefab istance
+    [SerializeField] private GameObject _spawnPrefab;
+    // Analytics recorder instance
+    [SerializeField] private GameObject _recorder;
     // Game manager instance used for the singleton
     protected static GameManager _instance;
     // Time at the start of the level
     protected DateTime _started;
     // Time at the respawn
     protected DateTime _fromLastRespawn;
-    // Player prefab istance
-    [SerializeField] private GameObject _playerPrefab;
-    // Spawnpoint prefab istance
-    [SerializeField] private GameObject _spawnPrefab;
-    [SerializeField] int idLenght = 5;
     /// the elapsed time since the start of the level
     public System.TimeSpan GlobalTimer { get { return DateTime.UtcNow - _started; } }
     // the elapsed time since the last respawn
     public System.TimeSpan CurrentTimer { get { return DateTime.UtcNow - _fromLastRespawn; } }
 
-    // Series of action event to be fired and recorded in the the analytics.
-    public event Action<string, object> registerEvent;
+    // Series of action event for info to be recorded in the the analytics.
+    public event Action<string, object> levelStartEvent;
+    public event Action<string, object> nodeReachedEvent;
+    public event Action<string, object> respawnEvent;
     public event Action<string, object> levelCompleteEvent;
 
     // Singleton to access the GameManager from other classes
@@ -64,8 +73,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            //If a Singleton already exists and you find
-            //another reference in scene, destroy it!
+            //If a Singleton already exists and you find another reference in scene, destroy it!
             if (this != _instance)
             {
                 Destroy(this.gameObject);
@@ -88,14 +96,6 @@ public class GameManager : MonoBehaviour
         LevelStartedRecorder();
     }
 
-    private void LevelStartedRecorder()
-    {
-        registerEvent("level_id", levelID);
-        registerEvent("level_started", true);
-        registerEvent("current_timer", CurrentTimer);
-        registerEvent("node_name", _spawnPrefab.name);
-    }
-
     // Generate random level id
     public static string LevelID(int length)
     {
@@ -104,25 +104,47 @@ public class GameManager : MonoBehaviour
           .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 
-    // Send information about new node reached
-    public void NodeReached(GameObject currentNode) 
+    // Save parameters to be recorded and send the data to UnityAnalytics on Level Start
+    private void LevelStartedRecorder()
     {
-        registerEvent("new_node_reached", true);
-        registerEvent("node_name", currentNode.name);
-        registerEvent("current_time", CurrentTimer);
+        if(!recordAnalytics) { return; }
+
+        levelStartEvent("level_id", levelID);
+        levelStartEvent("date", DateTime.Today);
+        levelStartEvent("level_started", true);
+        levelStartEvent("current_timer", CurrentTimer);
+        levelStartEvent("node_name", _spawnPrefab.name);
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("LevelStarted");
     }
 
-    // Respawn player
-    public void RespawnPlayer()
+    // Save parameters to be recorded and send the data to UnityAnalytics when a new node is reached
+    public void NodeReached(GameObject currentNode) 
     {
-        respawnCounter++;
-        registerEvent("death_position", _playerPrefab.transform.position);
-        registerEvent("death_timer", CurrentTimer);
+        if (!recordAnalytics) { return; }
+
+        nodeReachedEvent("new_node_reached", true);
+        nodeReachedEvent("node_name", currentNode.name);
+        nodeReachedEvent("current_time", CurrentTimer);
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("NodeReached");
+    }
+
+    // Save parameters to be recorded and send the data to UnityAnalytics on Respawn
+    public void RespawnPlayer()
+    {     
+        respawnCounter++;        
+        respawnEvent("death_position", _playerPrefab.transform.position);
+        respawnEvent("death_timer", CurrentTimer);
         _fromLastRespawn = DateTime.UtcNow;
-        _playerPrefab.transform.position = _spawnPrefab.transform.position;
-        registerEvent("player_respawned", true);
-        registerEvent("node_name", _spawnPrefab.name);
-        registerEvent("respawn_counter", respawnCounter);
-        registerEvent("current_timer", CurrentTimer);
+        respawnEvent("player_respawned", true);
+        respawnEvent("node_name", _spawnPrefab.name);
+        respawnEvent("respawn_counter", respawnCounter);
+        respawnEvent("current_timer", CurrentTimer);
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("PlayerRespawned");
+        SceneManager.LoadScene(0);
+    }
+
+    public void LevelComplete()
+    {
+        // to be done
     }
 }
