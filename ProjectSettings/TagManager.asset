@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Terrain
   - Walls
+  - Death
   layers:
   - Default
   - TransparentFX
