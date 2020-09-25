@@ -65,20 +65,15 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (_instance == null)
+        // if the singleton hasn't been initialized yet
+        if (_instance != null && _instance != this)
         {
-            //If I am the first instance, make me the Singleton
-            _instance = this as GameManager;
-            DontDestroyOnLoad(transform.gameObject);
+            Destroy(this.gameObject);
+            return;//Avoid doing anything else
         }
-        else
-        {
-            //If a Singleton already exists and you find another reference in scene, destroy it!
-            if (this != _instance)
-            {
-                Destroy(this.gameObject);
-            }
-        }
+
+        _instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
 
     // Start is called before the first frame update
@@ -114,7 +109,7 @@ public class GameManager : MonoBehaviour
         levelStartEvent("level_started", true);
         levelStartEvent("current_timer", CurrentTimer);
         levelStartEvent("node_name", _spawnPrefab.name);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("LevelStarted");
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("LevelAnalytics");
     }
 
     // Save parameters to be recorded and send the data to UnityAnalytics when a new node is reached
@@ -125,7 +120,7 @@ public class GameManager : MonoBehaviour
         nodeReachedEvent("new_node_reached", true);
         nodeReachedEvent("node_name", currentNode.name);
         nodeReachedEvent("current_time", CurrentTimer);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("NodeReached");
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("LevelAnalytics");
     }
 
     // Save parameters to be recorded and send the data to UnityAnalytics on Respawn
@@ -138,8 +133,7 @@ public class GameManager : MonoBehaviour
         respawnEvent("player_respawned", true);
         respawnEvent("node_name", _spawnPrefab.name);
         respawnEvent("respawn_counter", respawnCounter);
-        respawnEvent("current_timer", CurrentTimer);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("PlayerRespawned");
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("LevelAnalytics");
         SceneManager.LoadScene(0);
     }
 

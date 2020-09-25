@@ -13,36 +13,19 @@ public class AnalyticsRecorder : MonoBehaviour
     private void Awake()
     {
         dict = new Dictionary<string, object>();
-        GameManager.Instance.levelStartEvent += OnLevelStart;
-        GameManager.Instance.nodeReachedEvent += OnNodeReached;
-        GameManager.Instance.respawnEvent += OnRespawn;
-        GameManager.Instance.levelCompleteEvent += OnLevelComplete;
+        GameManager.Instance.levelStartEvent += AddParamenter;
+        GameManager.Instance.nodeReachedEvent += AddParamenter;
+        GameManager.Instance.respawnEvent += AddParamenter;
+        GameManager.Instance.levelCompleteEvent += AddParamenter;
     }
 
     // Add information into the dictionary on firing events
-    public void OnLevelStart(string recordName, object recordObject)
+    public void AddParamenter(string recordName, object recordObject)
     {
         dict[recordName] = recordObject;
     }
 
-    // Add information into the dictionary on firing events
-    public void OnNodeReached(string recordName, object recordObject)
-    {
-        dict[recordName] = recordObject;
-    }
-
-    // Add information into the dictionary on firing events
-    public void OnRespawn(string recordName, object recordObject) 
-    {
-        dict[recordName] = recordObject;
-    }
-
-    // Add information into the dictionary on level complete and sent information to Unity Analytics
-    public void OnLevelComplete(string recordName, object recordObject) 
-    {
-        dict[recordName] = recordObject;
-    }
-
+    // Send diction to Unity analatics
     public void RegisterEvent(string eventName)
     {
         //Analytics.CustomEvent(eventName, dict);
