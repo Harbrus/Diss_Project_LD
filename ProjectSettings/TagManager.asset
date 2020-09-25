@@ -7,6 +7,8 @@ TagManager:
   - Terrain
   - Walls
   - Death
+  - Node
+  - End
   layers:
   - Default
   - TransparentFX

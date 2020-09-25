@@ -26,7 +26,7 @@ public class AnalyticsRecorder : MonoBehaviour
     }
 
     // Send diction to Unity analatics
-    public void RegisterEvent(string eventName)
+    public void RegisterToEvent(string eventName)
     {
         //Analytics.CustomEvent(eventName, dict);
     }

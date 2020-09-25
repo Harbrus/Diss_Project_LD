@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
-            return;//Avoid doing anything else
+            return; //Avoid doing anything else
         }
 
         _instance = this;
@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
           .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 
-    // Save parameters to be recorded and send the data to UnityAnalytics on Level Start
+    // Save parameters to be recorded and send the data to UnityAnalytics on level start
     private void LevelStartedRecorder()
     {
         if(!recordAnalytics) { return; }
@@ -109,7 +109,7 @@ public class GameManager : MonoBehaviour
         levelStartEvent("level_started", true);
         levelStartEvent("current_timer", CurrentTimer);
         levelStartEvent("node_name", _spawnPrefab.name);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("LevelAnalytics");
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
     }
 
     // Save parameters to be recorded and send the data to UnityAnalytics when a new node is reached
@@ -120,10 +120,10 @@ public class GameManager : MonoBehaviour
         nodeReachedEvent("new_node_reached", true);
         nodeReachedEvent("node_name", currentNode.name);
         nodeReachedEvent("current_time", CurrentTimer);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("LevelAnalytics");
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
     }
 
-    // Save parameters to be recorded and send the data to UnityAnalytics on Respawn
+    // Save parameters to be recorded and send the data to UnityAnalytics on respawn
     public void RespawnPlayer()
     {     
         respawnCounter++;        
@@ -133,12 +133,18 @@ public class GameManager : MonoBehaviour
         respawnEvent("player_respawned", true);
         respawnEvent("node_name", _spawnPrefab.name);
         respawnEvent("respawn_counter", respawnCounter);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterEvent("LevelAnalytics");
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
         SceneManager.LoadScene(0);
     }
 
+    // Save parameters at the end of the level and close the game
     public void LevelComplete()
     {
-        // to be done
+        levelCompleteEvent("level_completed", true);
+        levelCompleteEvent("death_number", respawnCounter);
+        levelCompleteEvent("current_timer", CurrentTimer);
+        levelCompleteEvent("gloabal_timer", GlobalTimer);
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        Application.Quit();
     }
 }
