@@ -74,6 +74,8 @@ public class GameManager : MonoBehaviour
 
         _instance = this;
         DontDestroyOnLoad(this.gameObject);
+        Cursor.visible = false;
+
     }
 
     // Start is called before the first frame update
