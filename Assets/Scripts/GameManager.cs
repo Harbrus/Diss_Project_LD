@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private bool recordAnalytics = false;
     // Random used for level id generation 
     private static System.Random random = new System.Random();
     // ID string for the level
@@ -28,6 +27,8 @@ public class GameManager : MonoBehaviour
     protected DateTime _started;
     // Time at the respawn
     protected DateTime _fromLastRespawn;
+    // Coins 
+    public int coins = 0;
     /// the elapsed time since the start of the level
     public System.TimeSpan GlobalTimer { get { return DateTime.UtcNow - _started; } }
     // the elapsed time since the last respawn
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
     // Series of action event for info to be recorded in the the analytics.
     public event Action<string, object> levelStartEvent;
     public event Action<string, object> nodeReachedEvent;
+    public event Action<string, object> coinCollected;
     public event Action<string, object> respawnEvent;
     public event Action<string, object> levelCompleteEvent;
 
@@ -104,8 +106,6 @@ public class GameManager : MonoBehaviour
     // Save parameters to be recorded and send the data to UnityAnalytics on level start
     private void LevelStartedRecorder()
     {
-        if(!recordAnalytics) { return; }
-
         levelStartEvent("level_id", levelID);
         levelStartEvent("date", DateTime.Today);
         levelStartEvent("level_started", true);
@@ -117,8 +117,6 @@ public class GameManager : MonoBehaviour
     // Save parameters to be recorded and send the data to UnityAnalytics when a new node is reached
     public void NodeReached(GameObject currentNode) 
     {
-        if (!recordAnalytics) { return; }
-
         nodeReachedEvent("new_node_reached", true);
         nodeReachedEvent("node_name", currentNode.name);
         nodeReachedEvent("current_time", CurrentTimer);
@@ -136,7 +134,20 @@ public class GameManager : MonoBehaviour
         respawnEvent("node_name", _spawnPrefab.name);
         respawnEvent("respawn_counter", respawnCounter);
         _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
-        SceneManager.LoadScene(0);
+        coins = 0;
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
+    }
+
+    // Save parameters when a coin is collected
+    public void CoinCollected(GameObject coin)
+    {
+        coins++;
+        coinCollected("coin_collected", true);
+        coinCollected("coin_name", coin.name);
+        nodeReachedEvent("current_time", CurrentTimer);
+        coinCollected("coins_amount", coins);
+        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
     }
 
     // Save parameters at the end of the level and close the game

@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: frameborder_b
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _DETAIL_MULX2 _EMISSION _NORMALMAP
+  m_ShaderKeywords: _EMISSION _NORMALMAP
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -61,9 +61,9 @@ Material:
     - _DetailNormalMapScale: 0.15
     - _DstBlend: 0
     - _GlossMapScale: 0.587
-    - _Glossiness: 0.675
+    - _Glossiness: 0.757
     - _GlossyReflections: 1
-    - _Metallic: 0.83
+    - _Metallic: 0.893
     - _Mode: 0
     - _OcclusionStrength: 0.5
     - _Parallax: 0.02
@@ -73,5 +73,6 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.43529412, g: 0.3647059, b: 0.49019608, a: 1}
+    - _Color: {r: 0.5372549, g: 0.86119515, b: 1, a: 0.8862745}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []

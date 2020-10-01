@@ -15,6 +15,7 @@ public class AnalyticsRecorder : MonoBehaviour
         dict = new Dictionary<string, object>();
         GameManager.Instance.levelStartEvent += AddParamenter;
         GameManager.Instance.nodeReachedEvent += AddParamenter;
+        GameManager.Instance.coinCollected += AddParamenter;
         GameManager.Instance.respawnEvent += AddParamenter;
         GameManager.Instance.levelCompleteEvent += AddParamenter;
     }
