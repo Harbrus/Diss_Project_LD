@@ -26,9 +26,10 @@ public class AnalyticsRecorder : MonoBehaviour
         dict[recordName] = recordObject;
     }
 
-    // Send diction to Unity analatics
+    // Send dictionary to Unity analatics
     public void RegisterToEvent(string eventName)
     {
-        //Analytics.CustomEvent(eventName, dict);
+        Analytics.CustomEvent(eventName, dict);
+        dict.Clear();
     }
 }

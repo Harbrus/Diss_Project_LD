@@ -19,8 +19,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _playerPrefab;
     // Spawnpoint prefab istance
     [SerializeField] private GameObject _spawnPrefab;
-    // Analytics recorder instance
-    [SerializeField] private GameObject _recorder;
     // Game manager instance used for the singleton
     protected static GameManager _instance;
     // Time at the start of the level
@@ -111,7 +109,7 @@ public class GameManager : MonoBehaviour
         levelStartEvent("level_started", true);
         levelStartEvent("current_timer", CurrentTimer);
         levelStartEvent("node_name", _spawnPrefab.name);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
     }
 
     // Save parameters to be recorded and send the data to UnityAnalytics when a new node is reached
@@ -120,7 +118,7 @@ public class GameManager : MonoBehaviour
         nodeReachedEvent("new_node_reached", true);
         nodeReachedEvent("node_name", currentNode.name);
         nodeReachedEvent("current_time", CurrentTimer);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
     }
 
     // Save parameters to be recorded and send the data to UnityAnalytics on respawn
@@ -133,7 +131,7 @@ public class GameManager : MonoBehaviour
         respawnEvent("player_respawned", true);
         respawnEvent("node_name", _spawnPrefab.name);
         respawnEvent("respawn_counter", respawnCounter);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
         coins = 0;
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
@@ -146,8 +144,7 @@ public class GameManager : MonoBehaviour
         coinCollected("coin_collected", true);
         coinCollected("coin_name", coin.name);
         nodeReachedEvent("current_time", CurrentTimer);
-        coinCollected("coins_amount", coins);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
     }
 
     // Save parameters at the end of the level and close the game
@@ -155,9 +152,10 @@ public class GameManager : MonoBehaviour
     {
         levelCompleteEvent("level_completed", true);
         levelCompleteEvent("death_number", respawnCounter);
+        levelCompleteEvent("coins_amount", coins);
         levelCompleteEvent("current_timer", CurrentTimer);
         levelCompleteEvent("gloabal_timer", GlobalTimer);
-        _recorder.GetComponent<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
         Application.Quit();
     }
 }

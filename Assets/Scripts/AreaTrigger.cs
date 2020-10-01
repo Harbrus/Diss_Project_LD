@@ -14,7 +14,7 @@ public class AreaTrigger : MonoBehaviour
             }
             else if (this.gameObject.tag == "Node")
             {
-                GameManager.Instance.NodeReached(this.gameObject);
+               GameManager.Instance.NodeReached(this.gameObject);
             }
             else if (this.gameObject.tag == "End")
             {
