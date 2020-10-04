@@ -9,6 +9,7 @@ public class AnalyticsRecorder : MonoBehaviour
     // Recyclable dictionary for custom events
     [SerializeField] private Dictionary<string, object> dict;
     [SerializeField] private List<string> node_path;
+    [SerializeField] private bool debug = true;
 
     private void Awake()
     {
@@ -29,6 +30,11 @@ public class AnalyticsRecorder : MonoBehaviour
     // Send dictionary to Unity analatics
     public void RegisterToEvent(string eventName)
     {
+        if (debug)
+        {
+            return;
+        }
+
         Analytics.CustomEvent(eventName, dict);
         dict.Clear();
     }

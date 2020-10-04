@@ -12,13 +12,17 @@ public class GameManager : MonoBehaviour
     private static System.Random random = new System.Random();
     // ID string for the level
     private string levelID = "";
+    // ID for the current respawn
+    private string spawnID = "-run-";
     [SerializeField] int idLenght = 5;
     // Respawn counter
-    [SerializeField] private int respawnCounter;
+    [SerializeField] private int respawnCounter = 0;
     // Player prefab istance
     [SerializeField] private GameObject _playerPrefab;
     // Spawnpoint prefab istance
     [SerializeField] private GameObject _spawnPrefab;
+    // Node reached list
+    List<GameObject> nodesList = new List<GameObject>();
     // Game manager instance used for the singleton
     protected static GameManager _instance;
     // Time at the start of the level
@@ -106,32 +110,37 @@ public class GameManager : MonoBehaviour
     {
         levelStartEvent("level_id", levelID);
         levelStartEvent("date", DateTime.Today);
-        levelStartEvent("level_started", true);
-        levelStartEvent("current_timer", CurrentTimer);
-        levelStartEvent("node_name", _spawnPrefab.name);
-        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + "-LevelStartedEvent");
     }
 
     // Save parameters to be recorded and send the data to UnityAnalytics when a new node is reached
     public void NodeReached(GameObject currentNode) 
     {
-        nodeReachedEvent("new_node_reached", true);
-        nodeReachedEvent("node_name", currentNode.name);
-        nodeReachedEvent("current_time", CurrentTimer);
-        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        int counter = 0;
+
+        if(nodesList.Contains(currentNode))
+        {
+            counter = nodesList.Where(s => s != null && s.Equals(currentNode)).Count();
+        }
+        else
+        {
+            nodesList.Add(currentNode);
+        }
+
+        nodeReachedEvent("node_name", currentNode.name + "-" + counter);
+        nodeReachedEvent("current_timer", CurrentTimer);
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + spawnID + respawnCounter + "-NodesPathEvent");
     }
 
     // Save parameters to be recorded and send the data to UnityAnalytics on respawn
     public void RespawnPlayer()
     {     
-        respawnCounter++;        
+        respawnCounter++;
+        nodesList.Clear();
         respawnEvent("death_position", _playerPrefab.transform.position);
         respawnEvent("death_timer", CurrentTimer);
         _fromLastRespawn = DateTime.UtcNow;
-        respawnEvent("player_respawned", true);
-        respawnEvent("node_name", _spawnPrefab.name);
-        respawnEvent("respawn_counter", respawnCounter);
-        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + "-RespawnEvent");
         coins = 0;
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
@@ -141,21 +150,19 @@ public class GameManager : MonoBehaviour
     public void CoinCollected(GameObject coin)
     {
         coins++;
-        coinCollected("coin_collected", true);
         coinCollected("coin_name", coin.name);
         nodeReachedEvent("current_time", CurrentTimer);
-        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + spawnID + respawnCounter + "-CoinCollectedEvent");
     }
 
     // Save parameters at the end of the level and close the game
     public void LevelComplete()
     {
-        levelCompleteEvent("level_completed", true);
         levelCompleteEvent("death_number", respawnCounter);
         levelCompleteEvent("coins_amount", coins);
         levelCompleteEvent("current_timer", CurrentTimer);
         levelCompleteEvent("gloabal_timer", GlobalTimer);
-        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent("LevelAnalytics");
+        FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + spawnID + respawnCounter + "-LevelCompleteEvent");
         Application.Quit();
     }
 }
