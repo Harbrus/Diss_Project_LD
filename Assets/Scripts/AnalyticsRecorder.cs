@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Analytics;
 
@@ -7,15 +9,12 @@ public class AnalyticsRecorder : MonoBehaviour
 {
     // Recyclable dictionary for custom events
     [SerializeField] private Dictionary<string, object> dict;
-    [SerializeField] private List<string> node_path;
     [SerializeField] private bool debug = true;
 
     private void Awake()
     {
         dict = new Dictionary<string, object>();
         GameManager.Instance.levelStartEvent += AddParamenter;
-        GameManager.Instance.nodeReachedEvent += AddParamenter;
-        GameManager.Instance.coinCollected += AddParamenter;
         GameManager.Instance.respawnEvent += AddParamenter;
         GameManager.Instance.levelCompleteEvent += AddParamenter;
     }
