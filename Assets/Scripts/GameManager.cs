@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     protected DateTime _fromLastRespawn;
     // Coins 
     public int coins = 0;
+    private int pathCounter = 0;
+
     /// the elapsed time since the start of the level
     public System.TimeSpan GlobalTimer { get { return DateTime.UtcNow - _started; } }
     // the elapsed time since the last respawn
@@ -117,6 +119,7 @@ public class GameManager : MonoBehaviour
     public void NodeReached(GameObject currentNode) 
     {
         int counter = 0;
+        pathCounter++;
 
         if(nodesList.Contains(currentNode))
         {
@@ -126,7 +129,7 @@ public class GameManager : MonoBehaviour
         {
             nodesList.Add(currentNode);
         }
-
+        nodeReachedEvent("path_counter", pathCounter);
         nodeReachedEvent("node_name", currentNode.name + "-" + counter);
         nodeReachedEvent("current_timer", CurrentTimer);
         FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + spawnID + respawnCounter + "-NodesPathEvent");
@@ -134,14 +137,16 @@ public class GameManager : MonoBehaviour
 
     // Save parameters to be recorded and send the data to UnityAnalytics on respawn
     public void RespawnPlayer()
-    {     
+    {
         respawnCounter++;
         nodesList.Clear();
+        respawnEvent("respawn_counter", respawnCounter);
         respawnEvent("death_position", _playerPrefab.transform.position);
         respawnEvent("death_timer", CurrentTimer);
         _fromLastRespawn = DateTime.UtcNow;
         FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + "-RespawnEvent");
         coins = 0;
+        pathCounter = 0;
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
     }
@@ -150,6 +155,7 @@ public class GameManager : MonoBehaviour
     public void CoinCollected(GameObject coin)
     {
         coins++;
+        coinCollected("coins_amount", coins);
         coinCollected("coin_name", coin.name);
         nodeReachedEvent("current_time", CurrentTimer);
         FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + spawnID + respawnCounter + "-CoinCollectedEvent");
@@ -161,7 +167,7 @@ public class GameManager : MonoBehaviour
         levelCompleteEvent("death_number", respawnCounter);
         levelCompleteEvent("coins_amount", coins);
         levelCompleteEvent("current_timer", CurrentTimer);
-        levelCompleteEvent("gloabal_timer", GlobalTimer);
+        levelCompleteEvent("global_timer", GlobalTimer);
         FindObjectOfType<AnalyticsRecorder>().RegisterToEvent(levelID + spawnID + respawnCounter + "-LevelCompleteEvent");
         Application.Quit();
     }
