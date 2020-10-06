@@ -2171,7 +2171,7 @@ MonoBehaviour:
   horizontalInput: Horizontal
   verticallInput: Vertical
   jumpInput: 32
-  strafeInput: 9
+  strafeInput: 0
   sprintInput: 0
   rotateCameraXInput: Mouse X
   rotateCameraYInput: Mouse Y
