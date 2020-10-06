@@ -123,7 +123,6 @@ public class GameManager : MonoBehaviour
     // Save parameters to be recorded and send the data to UnityAnalytics on respawn
     public void RespawnPlayer()
     {
-        respawnCounter++;
         respawnEvent("death_position", _playerPrefab.transform.position);
         respawnEvent("death_timer", CurrentTimer);
         respawnEvent("node_path", nodesList);
@@ -134,6 +133,7 @@ public class GameManager : MonoBehaviour
         FindObjectOfType<AnalyticsRecorder>().SaveDictionary(levelID + spawnID + respawnCounter + "-RespawnEvent");
         _fromLastRespawn = DateTime.UtcNow;
         coins = 0;
+        respawnCounter++;
         nodesList.Clear();
         coinsList.Clear();
         Scene scene = SceneManager.GetActiveScene();
