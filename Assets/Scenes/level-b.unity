@@ -130,7 +130,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh15760
+  m_Name: pb_Mesh16688
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1710,7 +1710,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh15098
+  m_Name: pb_Mesh16026
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -54077,7 +54077,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh15944
+  m_Name: pb_Mesh16872
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -55072,7 +55072,7 @@ GameObject:
   - component: {fileID: 1397882827}
   m_Layer: 9
   m_Name: Cube (83)
-  m_TagString: Untagged
+  m_TagString: End
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -55378,8 +55378,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.41, y: 0.4, z: 3.28}
-  m_Center: {x: 2, y: 0.17, z: -2}
+  m_Size: {x: 3.41, y: 1.06, z: 3.28}
+  m_Center: {x: 2, y: 0.71, z: -2}
 --- !u!1 &1411233799
 GameObject:
   m_ObjectHideFlags: 0
@@ -77764,7 +77764,7 @@ PrefabInstance:
     - target: {fileID: 8305749336202997086, guid: f27d4bfe767e08640a1a6b61fadf8204,
         type: 3}
       propertyPath: debug
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8305749336202997087, guid: f27d4bfe767e08640a1a6b61fadf8204,
         type: 3}

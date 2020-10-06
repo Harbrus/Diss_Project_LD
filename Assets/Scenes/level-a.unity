@@ -48672,7 +48672,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh32094
+  m_Name: pb_Mesh40466
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -49586,7 +49586,7 @@ GameObject:
   - component: {fileID: 1397882827}
   m_Layer: 9
   m_Name: Cube (83)
-  m_TagString: Untagged
+  m_TagString: End
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49892,8 +49892,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.41, y: 0.4, z: 3.28}
-  m_Center: {x: 2, y: 0.17, z: -2}
+  m_Size: {x: 3.41, y: 0.6, z: 3.28}
+  m_Center: {x: 2, y: 0.41, z: -2}
 --- !u!850595691 &1417913570
 LightingSettings:
   m_ObjectHideFlags: 0
