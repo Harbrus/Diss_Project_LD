@@ -34,10 +34,10 @@ public class AnalyticsRecorder : MonoBehaviour
 
     public void SaveList(string eventName, object saveList) 
     {
-        if (debug)
-        {
-            return;
-        }
+        //if (debug)
+        //{
+        //    return;
+        //}
 
         string authorData = JsonConvert.SerializeObject(saveList, new JsonSerializerSettings()
         {
@@ -51,10 +51,10 @@ public class AnalyticsRecorder : MonoBehaviour
     // Send dictionary to Unity analatics
     public void SaveDictionary(string eventName)
     {
-        if (debug)
-        {
-            return;
-        }
+        //if (debug)
+        //{
+        //    return;
+        //}
 
         string authorData = JsonConvert.SerializeObject(dict, new JsonSerializerSettings()
         {
